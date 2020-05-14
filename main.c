@@ -5,18 +5,18 @@
 
 
 int main() {
-	struct OBRAZ *obraz;
-	char nazwa[20];
-	int zoom, zoo, il, pozycja, r, i;
+	struct PIC *pict;
+	char file_name[20];
+	int zoom, zoo, il, position, r, i;
 
 	printf("podaj nazwe pliku PGM: ");
-	scanf("%s", nazwa);
-	obraz = Wczytaj(nazwa);
+	scanf("%s", file_name);
+	pict = read_file(file_name);
 	do {
 		do {
 			printf("\nMENU: \n");
 			printf("1. Negatyw \n");
-			printf("2. Rozjasnianie\n");
+			printf("2. bright\n");
 			printf("3. Szum\n");
 			printf("4. Lustro\n");
 			printf("5. Zoom (najprostszy)\n");
@@ -27,39 +27,39 @@ int main() {
 			printf("10. Obracanie obrazu\n");
 			printf("11. Laczenie obrazow\n");
 			printf("12. Filtr (usredniajacy)\n");
-			scanf("%d", &pozycja);
-			if (pozycja > 12 || pozycja < 0) {
+			scanf("%d", &position);
+			if (position > 12 || position < 0) {
 				printf("wybierz pozycje z menu (1-12) ");
 			}
-		} while (pozycja > 12 || pozycja < 0);
+		} while (position > 12 || position < 0);
 
-		switch (pozycja) {
+		switch (position) {
 		case 1: {
-			obraz = Negatyw(obraz);
-			Zapis(obraz);
+			pict = Negatyw(pict);
+			Save(pict);
 			break;
 		}
 		case 2: {
 			printf("podaj wartosc o jaka chcesz zmienic jasnosc obrazu\n");
 			scanf("%d", &r);
-			obraz = Rozjasnianie(obraz, r);
-			Zapis(obraz);
+			pict = bright(pict, r);
+			Save(pict);
 			break;
 		}
 		case 3: {
 
-			obraz = Szum(obraz);
-			Zapis(obraz);
+			pict = noise(pict);
+			Save(pict);
 			break;
 		}
 		case 4: {
-			obraz = Lustro(obraz);
-			Zapis(obraz);
+			pict = Lustro(pict);
+			Save(pict);
 			break;
 		}
 		case 5: {
-			obraz = Zoom(obraz);
-			Zapis(obraz);
+			pict = Zoom(pict);
+			Save(pict);
 			break;
 		}
 		case 6: {
@@ -69,8 +69,8 @@ int main() {
 				if (zoom != 2 && zoom != 4 && zoom != 8 && zoom != 16 && zoom != 32 && zoom != 64) printf("wybrano pozycje spoza MENU\n");
 			} while (zoom != 2 && zoom != 4 && zoom != 8 && zoom != 16 && zoom != 32 && zoom != 64);
 			for (i = 1; i < zoom; i = i * 2) {
-				obraz = Zoom1(obraz);
-				Zapis(obraz);
+				pict = Zoom1(pict);
+				Save(pict);
 			}
 
 			break;
@@ -82,29 +82,29 @@ int main() {
 				if (zoom != 2 && zoom != 4 && zoom != 8 && zoom != 16 && zoom != 32 && zoom != 64) printf("wybrano pozycje spoza MENU\n");
 			} while (zoom != 2 && zoom != 4 && zoom != 8 && zoom != 16 && zoom != 32 && zoom != 64);
 			for (i = 1; i < zoom; i = i * 2) {
-				obraz = Zoom2(obraz);
-				Zapis(obraz);
+				pict = Zoom2(pict);
+				Save(pict);
 			}
 			break;
 		}
 		case 8: {
-			obraz = Progowanie(obraz);
-			Zapis(obraz);
+			pict = threshold(pict);
+			Save(pict);
 			break;
 		}
 		case 9: {
-			obraz = Histogram(obraz);
-			Zapis(obraz);
+			pict = Histogram(pict);
+			Save(pict);
 			break;
 		}
 		case 10: {
-			obraz = Obroty(obraz);
-			Zapis(obraz);
+			pict = rotation(pict);
+			Save(pict);
 			break;
 		}
 		case 11: {
-			obraz = Polacz(obraz);
-			Zapis(obraz);
+			pict = Add(pict);
+			Save(pict);
 			break;
 		}
 

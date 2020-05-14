@@ -4,118 +4,118 @@
 #include "hed.h"
 
 
-struct OBRAZ *Gradient(int szer, int wys, int szar) {
+struct PIC *Gradient(int width, int height, int gray_scale) {
 
-	struct OBRAZ *wsk_na_str;
+	struct PIC *pointer;
 	int i, j;
 
 
-	wsk_na_str = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+	pointer = (struct PIC*)malloc(sizeof(struct PIC));
 
-	wsk_na_str->x = szer;
-	wsk_na_str->y = wys;
-	wsk_na_str->skala = szar;
-	wsk_na_str->pixel = (int**)calloc(wsk_na_str->x, sizeof(int*));
-	for (i = 0; i<wsk_na_str->x; i++) {
-		wsk_na_str->pixel[i] = (int*)calloc(wsk_na_str->y, sizeof(int));
+	pointer->x = width;
+	pointer->y = height;
+	pointer->scale = gray_scale;
+	pointer->pixel = (int**)calloc(pointer->x, sizeof(int*));
+	for (i = 0; i<pointer->x; i++) {
+		pointer->pixel[i] = (int*)calloc(pointer->y, sizeof(int));
 	}
 
-	for (i = 0; i<wsk_na_str->x; i++) {
+	for (i = 0; i<pointer->x; i++) {
 
-		for (j = 0; j<wsk_na_str->y; j++) {
-			wsk_na_str->pixel[i][j] = j;
+		for (j = 0; j<pointer->y; j++) {
+			pointer->pixel[i][j] = j;
 		}
 	}
-	return wsk_na_str;
+	return pointer;
 }
 //niepotrzebne ale ready
-void Zapis(struct OBRAZ *do_zapisu) {
+void Save(struct PIC *ready_pic) {
 	int i, j;
 
-	FILE *wsk;
+	FILE *point;
 
-	wsk = fopen("nowy_obraz.pgm", "w");
-	fprintf(wsk, "%s\n", "P2");
-	fprintf(wsk, "%s\n", "# komentarz");
-	fprintf(wsk, "%d %d\n", do_zapisu->x, do_zapisu->y);
-	fprintf(wsk, "%d\n", do_zapisu->skala);
+	point = fopen("nowy_picture.pgm", "w");
+	fprintf(point, "%s\n", "P2");
+	fprintf(point, "%s\n", "# komentarz");
+	fprintf(point, "%d %d\n", ready_pic->x, ready_pic->y);
+	fprintf(point, "%d\n", ready_pic->scale);
 
-	for (j = 0; j<do_zapisu->y; j++) {
-		for (i = 0; i<do_zapisu->x; i++) {
-			fprintf(wsk, "%d ", do_zapisu->pixel[j][i]);
+	for (j = 0; j<ready_pic->y; j++) {
+		for (i = 0; i<ready_pic->x; i++) {
+			fprintf(point, "%d ", ready_pic->pixel[j][i]);
 		}
-		fprintf(wsk, "\n");
+		fprintf(point, "\n");
 	}
-	fclose(wsk);
+	fclose(point);
 }
 //ready
-struct OBRAZ *Skos(int szer, int wys, int szar) {
+struct PIC *slant(int width, int height, int gray_scale) {
 
-	struct OBRAZ *wsk_na_str;
+	struct PIC *pointer;
 	int i, j;
 
 
-	wsk_na_str = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+	pointer = (struct PIC*)malloc(sizeof(struct PIC));
 
-	wsk_na_str->x = szer;
-	wsk_na_str->y = wys;
-	wsk_na_str->skala = szar;
-	wsk_na_str->pixel = (int**)calloc(wsk_na_str->x, sizeof(int*));
-	for (i = 0; i<wsk_na_str->x; i++) {
-		wsk_na_str->pixel[i] = (int*)calloc(wsk_na_str->y, sizeof(int));
+	pointer->x = width;
+	pointer->y = height;
+	pointer->scale = gray_scale;
+	pointer->pixel = (int**)calloc(pointer->x, sizeof(int*));
+	for (i = 0; i<pointer->x; i++) {
+		pointer->pixel[i] = (int*)calloc(pointer->y, sizeof(int));
 	}
 
-	for (i = 0; i<wsk_na_str->x; i++) {
-		for (j = 0; j<wsk_na_str->y; j++) {
+	for (i = 0; i<pointer->x; i++) {
+		for (j = 0; j<pointer->y; j++) {
 
-			wsk_na_str->pixel[j][i] = (i + j) / 2;
+			pointer->pixel[j][i] = (i + j) / 2;
 		}
 	}
-	return wsk_na_str;
+	return pointer;
 }
 //ready ale po co
-struct OBRAZ *Wczytaj(char *nazwa) {
+struct PIC *read_file(char *file_name) {
 	int i, j, s, w, sz;
-	struct OBRAZ *wsk_na_str;
+	struct PIC *pointer;
 	char bufor[100];
-	FILE *wsk;
+	FILE *point;
 
-	wsk = fopen(nazwa, "r");
-	if (wsk == NULL)
+	point = fopen(file_name, "r");
+	if (point == NULL)
 	{
-		struct OBRAZ *obraz;
+		struct PIC *picture;
 		printf("Nie udalo sie otworzyc pliku, stworz wlasny, gradient\n podaj szerokosc\n");
 		scanf("%d", &s);
 		printf("podaj wysokosc\n");
 		scanf("%d", &w);
 		printf("podaj skale szarosci\n");
 		scanf("%d", &sz);
-		obraz = Gradient(s, w, sz);
-		Zapis(obraz);
-		/*	printf("program bêdzie pracowa³ na pliku 001.pgm\n");
+		picture = Gradient(s, w, sz);
+		Save(picture);
+		/*	printf("program bï¿½dzie pracowaï¿½ na pliku 001.pgm\n");
 		nazwa = "001.pgm";
-		wsk = fopen(nazwa, "r");
-		fgets(bufor, 100, wsk);
-		fgets(bufor, 100, wsk);
+		point = fopen(nazwa, "r");
+		fgets(bufor, 100, point);
+		fgets(bufor, 100, point);
 
-		wsk_na_str = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
-		//skanowanie parametrów z pocz¹tku pliku
-		fscanf(wsk, "%d%d%d", &wsk_na_str->x, &wsk_na_str->y, &wsk_na_str->skala);
+		pointer = (struct PIC*)malloc(sizeof(struct PIC));
+		//skanowanie parametrï¿½w z poczï¿½tku pliku
+		fscanf(point, "%d%d%d", &pointer->x, &pointer->y, &pointer->scale);
 		//alokacja
-		wsk_na_str->pixel = (int**)calloc(wsk_na_str->y, sizeof(int*));
-		for (i = 0; i < wsk_na_str->y; i++) {
-		wsk_na_str->pixel[i] = (int*)calloc(wsk_na_str->x, sizeof(int));
+		pointer->pixel = (int**)calloc(pointer->y, sizeof(int*));
+		for (i = 0; i < pointer->y; i++) {
+		pointer->pixel[i] = (int*)calloc(pointer->x, sizeof(int));
 		}
 
 		//wczytanie
-		for (j = 0; j < wsk_na_str->y; j++) {
-		for (i = 0; i < wsk_na_str->x; i++) {
-		fscanf(wsk, "%d", &wsk_na_str->pixel[j][i]);
+		for (j = 0; j < pointer->y; j++) {
+		for (i = 0; i < pointer->x; i++) {
+		fscanf(point, "%d", &pointer->pixel[j][i]);
 		}
 		}
 
-		fclose(wsk);
-		return wsk_na_str;
+		fclose(point);
+		return pointer;
 		*/
 	}
 
@@ -123,117 +123,117 @@ struct OBRAZ *Wczytaj(char *nazwa) {
 
 
 	else {
-		fgets(bufor, 100, wsk);
-		fgets(bufor, 100, wsk);
+		fgets(bufor, 100, point);
+		fgets(bufor, 100, point);
 
-		wsk_na_str = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
-		//skanowanie parametrów z pocz¹tku pliku
-		fscanf(wsk, "%d%d%d", &wsk_na_str->x, &wsk_na_str->y, &wsk_na_str->skala);
+		pointer = (struct PIC*)malloc(sizeof(struct PIC));
+		//skanowanie parametrï¿½w z poczï¿½tku pliku
+		fscanf(point, "%d%d%d", &pointer->x, &pointer->y, &pointer->scale);
 		//alokacja 
-		wsk_na_str->pixel = (int**)calloc(wsk_na_str->y, sizeof(int*));
-		for (i = 0; i < wsk_na_str->y; i++) {
-			wsk_na_str->pixel[i] = (int*)calloc(wsk_na_str->x, sizeof(int));
+		pointer->pixel = (int**)calloc(pointer->y, sizeof(int*));
+		for (i = 0; i < pointer->y; i++) {
+			pointer->pixel[i] = (int*)calloc(pointer->x, sizeof(int));
 		}
 
 		//wczytanie
-		for (j = 0; j < wsk_na_str->y; j++) {
-			for (i = 0; i < wsk_na_str->x; i++) {
-				fscanf(wsk, "%d", &wsk_na_str->pixel[j][i]);
+		for (j = 0; j < pointer->y; j++) {
+			for (i = 0; i < pointer->x; i++) {
+				fscanf(point, "%d", &pointer->pixel[j][i]);
 			}
 		}
 
-		fclose(wsk);
-		return wsk_na_str;
+		fclose(point);
+		return pointer;
 	}
 }
 //ready
-struct OBRAZ *Negatyw(struct OBRAZ *we) {
-	struct OBRAZ *wyj;
+struct PIC *Negatyw(struct PIC *in) {
+	struct PIC *out_put;
 	int i, j;
-	wyj = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
-	wyj->y = we->y;
-	wyj->x = we->x;
-	wyj->skala = we->skala;
+	out_put = (struct PIC*)malloc(sizeof(struct PIC));
+	out_put->y = in->y;
+	out_put->x = in->x;
+	out_put->scale = in->scale;
 
 
-	wyj->pixel = (int**)calloc(wyj->y, sizeof(int*));
-	for (i = 0; i<wyj->y; i++) {
-		wyj->pixel[i] = (int*)calloc(wyj->x, sizeof(int));
+	out_put->pixel = (int**)calloc(out_put->y, sizeof(int*));
+	for (i = 0; i<out_put->y; i++) {
+		out_put->pixel[i] = (int*)calloc(out_put->x, sizeof(int));
 	}
 
 
-	for (j = 0; j<wyj->y; j++) {
-		for (i = 0; i<wyj->x; i++) {
-			wyj->pixel[j][i] = wyj->skala - we->pixel[j][i];
+	for (j = 0; j<out_put->y; j++) {
+		for (i = 0; i<out_put->x; i++) {
+			out_put->pixel[j][i] = out_put->scale - in->pixel[j][i];
 		}
 	}
-	return wyj;
+	return out_put;
 }
 //ready
-struct OBRAZ *Rozjasnianie(struct OBRAZ *wej, int poziom) {
+struct PIC *bright(struct PIC *inp, int level) {
 
-	struct OBRAZ *wyjs;
+	struct PIC *outp;
 	int i, j;
-	wyjs = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
-	wyjs->y = wej->y;
-	wyjs->x = wej->x;
-	wyjs->skala = wej->skala;
+	outp = (struct PIC*)malloc(sizeof(struct PIC));
+	outp->y = inp->y;
+	outp->x = inp->x;
+	outp->scale = inp->scale;
 
 
-	wyjs->pixel = (int**)calloc(wyjs->y, sizeof(int*));
-	for (i = 0; i<wyjs->y; i++) {
-		wyjs->pixel[i] = (int*)calloc(wyjs->x, sizeof(int));
+	outp->pixel = (int**)calloc(outp->y, sizeof(int*));
+	for (i = 0; i<outp->y; i++) {
+		outp->pixel[i] = (int*)calloc(outp->x, sizeof(int));
 	}
 
 
-	for (j = 0; j<wyjs->y; j++) {
-		for (i = 0; i<wyjs->x; i++) {
-			wyjs->pixel[j][i] = wej->pixel[j][i] + poziom;
-			if (wyjs->pixel[j][i] > wyjs->skala) //zabezpieczenie
-				wyjs->pixel[j][i] = wyjs->skala;
-			if (wyjs->pixel[j][i] < 0)
-				wyjs->pixel[j][i] = 0;
+	for (j = 0; j<outp->y; j++) {
+		for (i = 0; i<outp->x; i++) {
+			outp->pixel[j][i] = inp->pixel[j][i] + level;
+			if (outp->pixel[j][i] > outp->scale) //zabezpieczenie
+				outp->pixel[j][i] = outp->scale;
+			if (outp->pixel[j][i] < 0)
+				outp->pixel[j][i] = 0;
 		}
 	}
 
-	return wyjs;
+	return outp;
 }
 //ready
-struct OBRAZ *Szum(struct OBRAZ *sz) {
-	struct OBRAZ *wyjs;
+struct PIC *noise(struct PIC *sz) {
+	struct PIC *outp;
 	int i, j;
 	int r;
-	wyjs = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
-	wyjs->y = sz->y;
-	wyjs->x = sz->x;
-	wyjs->skala = sz->skala;
+	outp = (struct PIC*)malloc(sizeof(struct PIC));
+	outp->y = sz->y;
+	outp->x = sz->x;
+	outp->scale = sz->scale;
 
 
-	wyjs->pixel = (int**)calloc(wyjs->y, sizeof(int*));
-	for (i = 0; i<wyjs->y; i++) {
-		wyjs->pixel[i] = (int*)calloc(wyjs->x, sizeof(int));
+	outp->pixel = (int**)calloc(outp->y, sizeof(int*));
+	for (i = 0; i<outp->y; i++) {
+		outp->pixel[i] = (int*)calloc(outp->x, sizeof(int));
 	}
 
 
-	for (j = 0; j<wyjs->y; j++) {
-		for (i = 0; i<wyjs->x; i++) {
-			wyjs->pixel[j][i] = sz->pixel[j][i];
+	for (j = 0; j<outp->y; j++) {
+		for (i = 0; i<outp->x; i++) {
+			outp->pixel[j][i] = sz->pixel[j][i];
 			r = rand() % 4;
-			if (r<2)	wyjs->pixel[j][i] = sz->pixel[j][i] + 255;
-			else wyjs->pixel[j][i] = sz->pixel[j][i] - 255;
+			if (r<2)	outp->pixel[j][i] = sz->pixel[j][i] + 255;
+			else outp->pixel[j][i] = sz->pixel[j][i] - 255;
 		}
 	}
 
-	return wyjs;
+	return outp;
 }
 //ready
-struct OBRAZ *Lustro(struct OBRAZ *lu) {
-	struct OBRAZ *ul;
-	int i, j, wybor;
-	ul = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+struct PIC *mirror(struct PIC *lu) {
+	struct PIC *ul;
+	int i, j, option;
+	ul = (struct PIC*)malloc(sizeof(struct PIC));
 	ul->y = lu->y;
 	ul->x = lu->x;
-	ul->skala = lu->skala;
+	ul->scale = lu->scale;
 
 	//alokacja
 	ul->pixel = (int**)calloc(ul->y, sizeof(int*));
@@ -243,12 +243,12 @@ struct OBRAZ *Lustro(struct OBRAZ *lu) {
 	do {
 		printf("podaj wybor lustra\n");
 		printf("1- X    2- Y\n");
-		scanf("%d", &wybor);
-		if (wybor != 1 && wybor != 2) printf("wybrano pozycje spoza MENU\n");
-	} while (wybor != 1 && wybor != 2);
-	switch (wybor) {
+		scanf("%d", &option);
+		if (option != 1 && option != 2) printf("wybrano pozycje spoza MENU\n");
+	} while (option != 1 && option != 2);
+	switch (option) {
 	case 1: {
-		//lustro X
+		//mirror X
 		for (j = 0; j < ul->y; j++) {
 			for (i = 0; i < ul->x; i++) {
 				ul->pixel[j][i] = lu->pixel[j][lu->x - i];
@@ -257,7 +257,7 @@ struct OBRAZ *Lustro(struct OBRAZ *lu) {
 		break;
 	}
 	case 2: {
-		//lustro Y
+		//mirror Y
 		for (j = 0; j < ul->y; j++) {
 			for (i = 0; i < ul->x; i++) {
 				ul->pixel[j][i] = lu->pixel[lu->y - j - 1][i];
@@ -269,10 +269,10 @@ struct OBRAZ *Lustro(struct OBRAZ *lu) {
 	return ul;
 }
 //ready
-struct OBRAZ *Zoom(struct OBRAZ *zo) {
-	struct OBRAZ *oz;
+struct PIC *Zoom(struct PIC *zo) {
+	struct PIC *oz;
 	int i, j, k, g, zoom;
-	oz = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+	oz = (struct PIC*)malloc(sizeof(struct PIC));
 
 	do {
 		printf("podaj powiekszenie (potega liczby 2)\n");
@@ -283,7 +283,7 @@ struct OBRAZ *Zoom(struct OBRAZ *zo) {
 
 	oz->y = (zoom * zo->y);
 	oz->x = (zoom * zo->x);
-	oz->skala = zo->skala;
+	oz->scale = zo->scale;
 
 	//alokacja
 	oz->pixel = (int**)calloc(oz->y, sizeof(int*));
@@ -305,21 +305,21 @@ struct OBRAZ *Zoom(struct OBRAZ *zo) {
 	return oz;
 }
 //ready ale to ten najprostszy
-struct OBRAZ *Zoom1(struct OBRAZ *zo) {
-	struct OBRAZ *oz;
+struct PIC *Zoom1(struct PIC *zo) {
+	struct PIC *oz;
 	int i, j, z, zoom;
-	int **okno;
-	oz = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+	int **frame;
+	oz = (struct PIC*)malloc(sizeof(struct PIC));
 
-	okno = (float**)calloc(3, sizeof(float*));
+	frame = (float**)calloc(3, sizeof(float*));
 	for (i = 0; i < 3; i++) {
-		okno[i] = (float*)calloc(3, sizeof(float));
+		frame[i] = (float*)calloc(3, sizeof(float));
 	}
 	//////////////////////////////////////////
 
 	oz->y = (2 * (zo->y));
 	oz->x = (2 * (zo->x));
-	oz->skala = zo->skala;
+	oz->scale = zo->scale;
 
 	//alokacja
 	oz->pixel = (float**)calloc((oz->y), sizeof(float*));
@@ -332,42 +332,42 @@ struct OBRAZ *Zoom1(struct OBRAZ *zo) {
 			oz->pixel[j * 2][i * 2] = zo->pixel[j][i];
 		}
 	}
-	//okno1
+	//frame1
 	for (j = 0; j < oz->y - 2; j = j + 2) {
 		for (i = 0; i < oz->x - 2; i = i + 2) {
-			okno[0][0] = oz->pixel[j][i];
-			okno[0][2] = oz->pixel[j][i + 2];
-			okno[2][0] = oz->pixel[j + 2][i];
-			okno[2][2] = oz->pixel[j + 2][i + 2];
+			frame[0][0] = oz->pixel[j][i];
+			frame[0][2] = oz->pixel[j][i + 2];
+			frame[2][0] = oz->pixel[j + 2][i];
+			frame[2][2] = oz->pixel[j + 2][i + 2];
 
-			oz->pixel[j + 1][i + 1] = (okno[0][0] + okno[0][2] + okno[2][0] + okno[2][2]) / 4;
+			oz->pixel[j + 1][i + 1] = (frame[0][0] + frame[0][2] + frame[2][0] + frame[2][2]) / 4;
 		}
 	}
-	//okno2
+	//frame2
 	for (j = 0; j < oz->y - 2; j = j + 1) {
 		if (j % 2 == 0) {
 			for (i = 1; i < oz->x - 2; i = i + 2) {
-				okno[0][1] = oz->pixel[j][i + 1];
-				okno[1][2] = oz->pixel[j + 1][i + 2];
-				okno[1][0] = oz->pixel[j + 1][i];
-				okno[2][1] = oz->pixel[j + 2][i + 1];
+				frame[0][1] = oz->pixel[j][i + 1];
+				frame[1][2] = oz->pixel[j + 1][i + 2];
+				frame[1][0] = oz->pixel[j + 1][i];
+				frame[2][1] = oz->pixel[j + 2][i + 1];
 
-				oz->pixel[j + 1][i + 1] = (okno[0][1] + okno[1][2] + okno[1][0] + okno[2][1]) / 4;
+				oz->pixel[j + 1][i + 1] = (frame[0][1] + frame[1][2] + frame[1][0] + frame[2][1]) / 4;
 			}
 		}
 		else {
 			for (i = 0; i < oz->x - 2; i = i + 2) {
-				okno[0][1] = oz->pixel[j][i + 1];
-				okno[1][2] = oz->pixel[j + 1][i + 2];
-				okno[1][0] = oz->pixel[j + 1][i];
-				okno[2][1] = oz->pixel[j + 2][i + 1];
+				frame[0][1] = oz->pixel[j][i + 1];
+				frame[1][2] = oz->pixel[j + 1][i + 2];
+				frame[1][0] = oz->pixel[j + 1][i];
+				frame[2][1] = oz->pixel[j + 2][i + 1];
 
-				oz->pixel[j + 1][i + 1] = (okno[0][1] + okno[1][2] + okno[1][0] + okno[2][1]) / 4;
+				oz->pixel[j + 1][i + 1] = (frame[0][1] + frame[1][2] + frame[1][0] + frame[2][1]) / 4;
 			}
 		}
 	}
 
-	//uzupe³nienie krawêdzi
+	//uzupeï¿½nienie krawï¿½dzi
 	for (j = 0; j < oz->y; j = j + 2) {
 		for (i = 0; i < oz->x + 1; i = i + 2) {
 			oz->pixel[j + 1][0] = oz->pixel[j][0];
@@ -384,23 +384,23 @@ struct OBRAZ *Zoom1(struct OBRAZ *zo) {
 	return oz;
 
 }
-//ready ten bardziej zaawansowany UŒREDNIAJ¥CY
-struct OBRAZ *Zoom2(struct OBRAZ *o) {
-	struct OBRAZ *z;
+//ready ten bardziej zaawansowany Uï¿½REDNIAJï¿½CY
+struct PIC *Zoom2(struct PIC *o) {
+	struct PIC *z;
 
 	int i, j, h, k, zoom;
-	int **okno;
-	z = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+	int **frame;
+	z = (struct PIC*)malloc(sizeof(struct PIC));
 
-	okno = (float**)calloc(3, sizeof(float*));
+	frame = (float**)calloc(3, sizeof(float*));
 	for (i = 0; i < 3; i++) {
-		okno[i] = (float*)calloc(3, sizeof(float));
+		frame[i] = (float*)calloc(3, sizeof(float));
 	}
 	//////////////////////////////////////////
 
 	z->y = (2 * (o->y));
 	z->x = (2 * (o->x));
-	z->skala = o->skala;
+	z->scale = o->scale;
 
 	//alokacja
 	z->pixel = (float**)calloc((z->y), sizeof(float*));
@@ -413,108 +413,108 @@ struct OBRAZ *Zoom2(struct OBRAZ *o) {
 			z->pixel[j * 2][i * 2] = o->pixel[j][i];
 		}
 	}
-	//okno1
+	//frame1
 	for (j = 0; j < z->y - 2; j = j + 2) {
 		for (i = 0; i < z->x - 2; i = i + 2) {
-			okno[0][0] = z->pixel[j][i];
-			okno[0][2] = z->pixel[j][i + 2];
-			okno[2][0] = z->pixel[j + 2][i];
-			okno[2][2] = z->pixel[j + 2][i + 2];
+			frame[0][0] = z->pixel[j][i];
+			frame[0][2] = z->pixel[j][i + 2];
+			frame[2][0] = z->pixel[j + 2][i];
+			frame[2][2] = z->pixel[j + 2][i + 2];
 
 
 
-			//// musi byæ sortowanie
+			//// musi byï¿½ sortowanie
 			for (j = 0; j < 3; j++) {
-				if (okno[0][0] > okno[0][2])
+				if (frame[0][0] > frame[0][2])
 				{
-					k = okno[0][0];
-					okno[0][0] = okno[0][2];
-					okno[0][2] = k;
+					k = frame[0][0];
+					frame[0][0] = frame[0][2];
+					frame[0][2] = k;
 				}
-				if (okno[0][2] > okno[2][0])
+				if (frame[0][2] > frame[2][0])
 				{
-					k = okno[0][2];
-					okno[0][2] = okno[2][0];
-					okno[2][0] = k;
+					k = frame[0][2];
+					frame[0][2] = frame[2][0];
+					frame[2][0] = k;
 				}
-				if (okno[2][0] > okno[2][2])
+				if (frame[2][0] > frame[2][2])
 				{
-					k = okno[2][0];
-					okno[2][0] = okno[2][2];
-					okno[2][2] = k;
+					k = frame[2][0];
+					frame[2][0] = frame[2][2];
+					frame[2][2] = k;
 				}
 			}
 
 
 			///////////////////
-			z->pixel[j + 1][i + 1] = (okno[0][2] + okno[2][0]) / 2;
+			z->pixel[j + 1][i + 1] = (frame[0][2] + frame[2][0]) / 2;
 		}
 	}
-	//okno2
+	//frame2
 	for (j = 0; j < z->y - 2; j = j + 1) {
 		if (j % 2 == 0) {
 			for (i = 1; i < z->x - 2; i = i + 2) {
-				okno[0][1] = z->pixel[j][i + 1];
-				okno[1][0] = z->pixel[j + 1][i + 2];
-				okno[1][2] = z->pixel[j + 1][i];
-				okno[2][1] = z->pixel[j + 2][i + 1];
+				frame[0][1] = z->pixel[j][i + 1];
+				frame[1][0] = z->pixel[j + 1][i + 2];
+				frame[1][2] = z->pixel[j + 1][i];
+				frame[2][1] = z->pixel[j + 2][i + 1];
 
 				/////////////
 				for (j = 0; j < 3; j++) {
-					if (okno[0][1] > okno[1][0])
+					if (frame[0][1] > frame[1][0])
 					{
-						k = okno[0][1];
-						okno[0][1] = okno[1][0];
-						okno[1][0] = k;
+						k = frame[0][1];
+						frame[0][1] = frame[1][0];
+						frame[1][0] = k;
 					}
-					if (okno[1][0] > okno[1][2])
+					if (frame[1][0] > frame[1][2])
 					{
-						k = okno[1][0];
-						okno[1][0] = okno[1][2];
-						okno[1][2] = k;
+						k = frame[1][0];
+						frame[1][0] = frame[1][2];
+						frame[1][2] = k;
 					}
-					if (okno[1][2] > okno[2][1])
+					if (frame[1][2] > frame[2][1])
 					{
-						k = okno[1][2];
-						okno[1][2] = okno[2][1];
-						okno[2][1] = k;
+						k = frame[1][2];
+						frame[1][2] = frame[2][1];
+						frame[2][1] = k;
 					}
 				}
 				/////////////
 
-				z->pixel[j + 1][i + 1] = (okno[1][2] + okno[1][0]) / 2;
+				z->pixel[j + 1][i + 1] = (frame[1][2] + frame[1][0]) / 2;
 			}
 		}
 		else {
 			for (i = 0; i < z->x - 2; i = i + 2) {
 				for (j = 0; j < 3; j++) {
-					if (okno[0][1] > okno[1][0])
+					if (frame[0][1] > frame[1][0])
 					{
-						k = okno[0][1];
-						okno[0][1] = okno[1][0];
-						okno[1][0] = k;
+						k = frame[0][1];
+						frame[0][1] = frame[1][0];
+						frame[1][0] = k;
 					}
-					if (okno[1][0] > okno[1][2])
+					if (frame[1][0] > frame[1][2])
 					{
-						k = okno[1][0];
-						okno[1][0] = okno[1][2];
-						okno[1][2] = k;
+						k = frame[1][0];
+						frame[1][0] = frame[1][2];
+						frame[1][2] = k;
 					}
-					if (okno[1][2] > okno[2][0])
+					if (frame[1][2] > frame[2][0])
 					{
-						k = okno[1][2];
-						okno[1][2] = okno[2][0];
-						okno[2][0] = k;
+						k = frame[1][2];
+						frame[1][2] = frame[2][0];
+						frame[2][0] = k;
 					}
 				}
 				/////////////
 
-				z->pixel[j + 1][i + 1] = (okno[1][2] + okno[1][0]) / 2;
+				z->pixel[j + 1][i + 1] = (frame[1][2] + frame[1][0]) / 2;
 			}
 		}
 	}
 
-	//uzupe³nienie krawêdzi
+	//uzupeï¿½nienie krawï¿½dzi
 	for (j = 0; j < z->y; j = j + 2) {
 		for (i = 0; i < z->x + 1; i = i + 2) {
 			z->pixel[j + 1][0] = z->pixel[j][0];
@@ -532,18 +532,18 @@ struct OBRAZ *Zoom2(struct OBRAZ *o) {
 	return z;
 }
 //ten bardziej zaawansowany MEDIANOWY
-struct OBRAZ *Progowanie(struct OBRAZ *przed) {
-	struct OBRAZ *po;
-	int i, j, prog;
-	po = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
-	po->y = przed->y;
-	po->x = przed->x;
-	po->skala = przed->skala;
+struct PIC *threshold(struct PIC *inputt) {
+	struct PIC *output;
+	int i, j, thr;
+	output = (struct PIC*)malloc(sizeof(struct PIC));
+	output->y = inputt->y;
+	output->x = inputt->x;
+	output->scale = inputt->scale;
 
 	//alokacja
-	po->pixel = (int**)calloc(po->y, sizeof(int*));
-	for (i = 0; i<po->y; i++) {
-		po->pixel[i] = (int*)calloc(po->x, sizeof(int));
+	output->pixel = (int**)calloc(output->y, sizeof(int*));
+	for (i = 0; i<output->y; i++) {
+		output->pixel[i] = (int*)calloc(output->x, sizeof(int));
 	}
 	/*
 	do {
@@ -554,30 +554,30 @@ struct OBRAZ *Progowanie(struct OBRAZ *przed) {
 	} while (wybor != 1 && wybor != 2);
 	*/
 	do {
-		printf("podaj prog wedlug ktorego chcesz dokonac progowania( od 0 do %d)\n", po->skala);
-		scanf("%d", &prog);
-		if (prog > po->skala) printf("wartosc progu spoza przedzialu\n");
-	} while (prog > po->skala);
+		printf("podaj prog wedlug ktorego chcesz dokonac progowania( od 0 do %d)\n", output->scale);
+		scanf("%d", &thr);
+		if (thr > output->scale) printf("wartosc progu spoza przedzialu\n");
+	} while (thr > output->scale);
 
-	for (j = 0; j < po->y; j++) {
-		for (i = 0; i < po->x; i++) {
-			if (przed->pixel[j][i]>prog) po->pixel[j][i] = 0;
-			else po->pixel[j][i] = po->skala - 1;
+	for (j = 0; j < output->y; j++) {
+		for (i = 0; i < output->x; i++) {
+			if (inputt->pixel[j][i]>thr) output->pixel[j][i] = 0;
+			else output->pixel[j][i] = output->scale - 1;
 		}
 	}
 
-	return po;
+	return output;
 }
 //ready
-struct OBRAZ *Histogram(struct OBRAZ *his) {
+struct PIC *Histogram(struct PIC *his) {
 
 	int i, j, k, yorn;
 	int **tab;
 	tab = (int**)calloc(2, sizeof(int*));
 	for (i = 0; i < 2; i++) {
-		tab[i] = (int*)calloc(his->skala + 1, sizeof(int));
+		tab[i] = (int*)calloc(his->scale + 1, sizeof(int));
 	}
-	for (i = 0; i <= his->skala + 1; i++) {
+	for (i = 0; i <= his->scale + 1; i++) {
 		tab[0][i] = i;
 	}
 	for (j = 0; j < his->y; j++) {
@@ -595,28 +595,28 @@ struct OBRAZ *Histogram(struct OBRAZ *his) {
 	}
 	else printf("zrezygnowano z wypisania\n");
 
-	RysujWykres(tab, his->skala + 1, "histogram.html");
+	DrawChart(tab, his->scale + 1, "histogram.html");
 	printf("utworzono wykres dostepny w pliku o nazwie 'histogram.html'\n");
 	return his;
 
 }
 //ready
-struct OBRAZ *Obroty(struct OBRAZ *ob) {
-	struct OBRAZ *spin;
-	int i, j, wybor;
-	spin = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+struct PIC *rotation(struct PIC *ob) {
+	struct PIC *spin;
+	int i, j, option;
+	spin = (struct PIC*)malloc(sizeof(struct PIC));
 
 	do {
 		printf("podaj jak chcesz obrocic obraz (w prawo)\n (1 - 90 2 - 180 3 - 270)\n");
-		scanf("%d", &wybor);
-		if (wybor != 1 && wybor != 2 && wybor != 3) printf("wybrano pozycje spoza MENU\n");
-	} while (wybor != 1 && wybor != 2 && wybor != 3);
+		scanf("%d", &option);
+		if (option != 1 && option != 2 && option != 3) printf("wybrano pozycje spoza MENU\n");
+	} while (option != 1 && option != 2 && option != 3);
 
-	switch (wybor) {
+	switch (option) {
 	case 1: {
 		spin->x = ob->y;
 		spin->y = ob->x;
-		spin->skala = ob->skala;
+		spin->scale = ob->scale;
 
 		spin->pixel = (int**)calloc(spin->y, sizeof(int*));
 		for (i = 0; i<spin->y; i++) {
@@ -633,7 +633,7 @@ struct OBRAZ *Obroty(struct OBRAZ *ob) {
 	case 2: {
 		spin->x = ob->x;
 		spin->y = ob->y;
-		spin->skala = ob->skala;
+		spin->scale = ob->scale;
 
 		spin->pixel = (int**)calloc(spin->y, sizeof(int*));
 		for (i = 0; i<spin->y; i++) {
@@ -650,7 +650,7 @@ struct OBRAZ *Obroty(struct OBRAZ *ob) {
 	case 3: {
 		spin->x = ob->y;
 		spin->y = ob->x;
-		spin->skala = ob->skala;
+		spin->scale = ob->scale;
 
 		spin->pixel = (int**)calloc(spin->y, sizeof(int*));
 		for (i = 0; i<spin->y; i++) {
@@ -668,49 +668,49 @@ struct OBRAZ *Obroty(struct OBRAZ *ob) {
 	return spin;
 }
 //ready
-struct OBRAZ *Polacz(struct OBRAZ *sk) {
-	struct OBRAZ *wyjt;
-	int i, j, k, h, ile, ilex, iley, jak;
-	wyjt = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+struct PIC *Add(struct PIC *sk) {
+	struct PIC *out;
+	int i, j, k, h, ile, how_much_x, how_much_y, jak;
+	out = (struct PIC*)malloc(sizeof(struct PIC));
 
 	do {
 		printf("podaj ile obrazow chcesz polaczyc w pionie\n");
-		scanf("%d", &iley);
+		scanf("%d", &how_much_y);
 
 		printf("podaj ile obrazow chcesz polaczyc w poziomie\n");
-		scanf("%d", &ilex);
-		if (iley == 0 || ilex == 0) printf("podaj inna wartosc niz 0\n");
-	} while (iley == 0 || ilex == 0);
+		scanf("%d", &how_much_x);
+		if (how_much_y == 0 || how_much_x == 0) printf("podaj inna wartosc niz 0\n");
+	} while (how_much_y == 0 || how_much_x == 0);
 
-	wyjt->y = iley * sk->y;
-	wyjt->x = ilex * (sk->x);
-	wyjt->skala = sk->skala;
+	out->y = how_much_y * sk->y;
+	out->x = how_much_x * (sk->x);
+	out->scale = sk->scale;
 
-	wyjt->pixel = (int**)calloc(wyjt->y, sizeof(int*));
-	for (i = 0; i<wyjt->y; i++) {
-		wyjt->pixel[i] = (int*)calloc(wyjt->x, sizeof(int));
+	out->pixel = (int**)calloc(out->y, sizeof(int*));
+	for (i = 0; i<out->y; i++) {
+		out->pixel[i] = (int*)calloc(out->x, sizeof(int));
 	}
 
 	for (i = 0; i<sk->x; i++) {
-		for (h = 0; h < ilex; h++) {
-			for (k = 0; k < iley; k++) {
+		for (h = 0; h < how_much_x; h++) {
+			for (k = 0; k < how_much_y; k++) {
 				for (j = 0; j < sk->y; j++) {
-					wyjt->pixel[j + k*sk->y][i + h*sk->x] = sk->pixel[j][i];
+					out->pixel[j + k*sk->y][i + h*sk->x] = sk->pixel[j][i];
 				}
 			}
 		}
 	}
 
-	return wyjt;
+	return out;
 }
 //ready
-struct OBRAZ *Filtr(struct OBRAZ *fil) {   //srednia
-	struct OBRAZ *lif;
+struct PIC *filter(struct PIC *fil) {   //srednia
+	struct PIC *lif;
 	int i, j;
-	lif = (struct OBRAZ*)malloc(sizeof(struct OBRAZ));
+	lif = (struct PIC*)malloc(sizeof(struct PIC));
 	lif->x = fil->x;
 	lif->y = fil->y;
-	lif->skala = fil->skala;
+	lif->scale = fil->scale;
 
 	lif->pixel = (float**)calloc(lif->y, sizeof(float*));
 	for (i = 0; i < lif->y; i++) {
@@ -731,45 +731,45 @@ struct OBRAZ *Filtr(struct OBRAZ *fil) {   //srednia
 	return lif;
 }
 //ready SREDNIA
-void RysujWykres(int **dane, int l_linii, char *nazwa) {
-	FILE *Wsk_do_pliku;
+void DrawChart(int **data, int len, char *file_name) {
+	FILE *pointer_to_file;
 	int i;
 
-	Wsk_do_pliku = fopen(nazwa, "w");
+	pointer_to_file = fopen(file_name, "w");
 
-	fprintf(Wsk_do_pliku, "<html>\n");
-	fprintf(Wsk_do_pliku, "<head>\n");
-	fprintf(Wsk_do_pliku, "<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>\n");
-	fprintf(Wsk_do_pliku, "<script type=\"text/javascript\">\n");
-	fprintf(Wsk_do_pliku, "google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});\n");
-	fprintf(Wsk_do_pliku, "google.setOnLoadCallback(drawChart);\n");
-	fprintf(Wsk_do_pliku, "function drawChart() {\n");
-	fprintf(Wsk_do_pliku, "var data = google.visualization.arrayToDataTable([\n");
-	fprintf(Wsk_do_pliku, "['skala', 'ilosc']");
+	fprintf(pointer_to_file, "<html>\n");
+	fprintf(pointer_to_file, "<head>\n");
+	fprintf(pointer_to_file, "<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>\n");
+	fprintf(pointer_to_file, "<script type=\"text/javascript\">\n");
+	fprintf(pointer_to_file, "google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});\n");
+	fprintf(pointer_to_file, "google.setOnLoadCallback(drawChart);\n");
+	fprintf(pointer_to_file, "function drawChart() {\n");
+	fprintf(pointer_to_file, "var data = google.visualization.arrayToDataTable([\n");
+	fprintf(pointer_to_file, "['scale', 'ilosc']");
 
 
-	for (i = 0; i<l_linii; i++) {
-		fprintf(Wsk_do_pliku, ",\n[%d, %d]", dane[0][i], dane[1][i]);   //przekazanie danych na wykres
+	for (i = 0; i<len; i++) {
+		fprintf(pointer_to_file, ",\n[%d, %d]", data[0][i], data[1][i]);   //przekazanie danych na wykres
 	}
 
-	fprintf(Wsk_do_pliku, "\n]);\n");
+	fprintf(pointer_to_file, "\n]);\n");
 
-	fprintf(Wsk_do_pliku, "var options = {\n");
-	fprintf(Wsk_do_pliku, "title: 'Histogram'\n");
-	fprintf(Wsk_do_pliku, "};\n");
-	fprintf(Wsk_do_pliku, "var chart = new google.visualization.LineChart(document.getElementById('chart_div'));\n");
-	fprintf(Wsk_do_pliku, "chart.draw(data, {\n");
-	fprintf(Wsk_do_pliku, "colors: ['red']\n");
-	fprintf(Wsk_do_pliku, "}\n");
-	fprintf(Wsk_do_pliku, ");\n");
-	fprintf(Wsk_do_pliku, "}\n");
-	fprintf(Wsk_do_pliku, "</script>\n");
-	fprintf(Wsk_do_pliku, "</head>\n");
-	fprintf(Wsk_do_pliku, "<body>\n");
-	fprintf(Wsk_do_pliku, "<div id=\"chart_div\" style=\"width: 1280px; height: 720px;\"></div>\n");
-	fprintf(Wsk_do_pliku, "</body>\n");
-	fprintf(Wsk_do_pliku, "</html>\n");
+	fprintf(pointer_to_file, "var options = {\n");
+	fprintf(pointer_to_file, "title: 'Histogram'\n");
+	fprintf(pointer_to_file, "};\n");
+	fprintf(pointer_to_file, "var chart = new google.visualization.LineChart(document.getElementById('chart_div'));\n");
+	fprintf(pointer_to_file, "chart.draw(data, {\n");
+	fprintf(pointer_to_file, "colors: ['red']\n");
+	fprintf(pointer_to_file, "}\n");
+	fprintf(pointer_to_file, ");\n");
+	fprintf(pointer_to_file, "}\n");
+	fprintf(pointer_to_file, "</script>\n");
+	fprintf(pointer_to_file, "</head>\n");
+	fprintf(pointer_to_file, "<body>\n");
+	fprintf(pointer_to_file, "<div id=\"chart_div\" style=\"width: 1280px; height: 720px;\"></div>\n");
+	fprintf(pointer_to_file, "</body>\n");
+	fprintf(pointer_to_file, "</html>\n");
 
-	fclose(Wsk_do_pliku);
+	fclose(pointer_to_file);
 }
 //ready DO HISTOGRAMU
